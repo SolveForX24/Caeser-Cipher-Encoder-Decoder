@@ -32,12 +32,6 @@ int main() {
                 cout << "Please enter the string to be encoded: ";
                 getline(cin, code);
 
-                // Making the string all lowercase
-                // Code from here and slightly modified: https://thispointer.com/converting-a-string-to-upper-lower-case-in-c-using-stl-boost-library/#:~:text=C%2B%2B%20provides%20a%20function%20%3A%3Atolower()%20that%20converts%20a,int%20tolower%20(%20int%20c%20)%3B
-                for_each(code.begin(), code.end(), [](char & c) {
-                    c = tolower(c);
-                });
-
                 // Gets shift
                 shift = prompt_int_min_max("Please enter the shift (1 to 26, inclusive): ", 1, 26);
                 //cout << "Got shift: " << shift << endl;
@@ -46,7 +40,19 @@ int main() {
                 cout <<  "\nEncoded: " << encode(code, shift) << "\n\n";
                 break;
             case 2:
-                cout << "Decoder not set up yet";
+
+                // Gets string to decode
+                cout << "Please enter the string to be decoded: ";
+                getline(cin, code);
+
+                cout << endl;
+
+                // Loops through and shows the given string shifted from 1 to 25.
+                for (int i = 1; i <= 25; i++) {
+                    cout << "Decoded with a shift of " << i << ": " << encode(code, i) << "\n";
+                }
+
+                cout << endl << "Please look through the shifted versions of the code to find the one that works best.\n";
                 break;
             case 3:
                 running = false;
@@ -75,25 +81,29 @@ string encode(string start, int shift) {
         //cout << "currentChar: " << currentChar << endl;
         charAscii = currentChar;
 
-       // cout << "charAscii: " << charAscii << endl;
+        //cout << "charAscii: " << charAscii << endl;
 
-       // Checks if the character supplied was uppercase or not a letter, then shifts the ASCII to lowercase or returns it's initial self
+       // Checks if the character supplied was uppercase or not a letter, then shifts the ASCII or returns it's initial self. Else, it's lowercase.
         if (charAscii >= 65 && charAscii <= 90) {
-            charAscii += 32;
-            //cout << "charAscii was capital, shifted to lowercase: " << charAscii << endl;
+            charAscii += shift;
+            if (charAscii > 90) {
+                charAscii -= 26;
+            }
+            //cout << "charAscii was capital: " << charAscii << endl;
         } else if (charAscii < 97 || charAscii > 122) {
             shiftedChar = currentChar;
             //cout << "Not a letter, shiftedChar: " << shiftedChar << endl;
             encoded.push_back(shiftedChar);
             //cout << "encoded Current: " << encoded << endl;
             continue;
+        } else {
+            // Shift the ASCII if lowercase
+            charAscii += shift;
+            if (charAscii > 122) {
+                charAscii -= 26;
+            }
         }
 
-        // Shift the ASCII
-        charAscii += shift;
-        if (charAscii > 122) {
-            charAscii = 97;
-        }
         //cout << "shifted charAscii: " << charAscii << endl;
 
         // Turn into char, append it to encoded string
